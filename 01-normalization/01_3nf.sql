@@ -1,0 +1,72 @@
+--1
+CREATE TABLE IF NOT EXISTS managers (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    surname VARCHAR(50) NOT NULL,
+    phone VARCHAR(20) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS cars (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    car_brand VARCHAR(50) NOT NULL,
+    model VARCHAR(50) NOT NULL,
+    body_type VARCHAR(30) NOT NULL,
+    color VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS sales (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    manager_id INT NOT NULL,
+    car_id INT NOT NULL,
+    date_of_sale DATE NOT NULL,
+    price DECIMAL(10, 2) NOT NULL CHECK (price > 0),
+    FOREIGN KEY (manager_id) REFERENCES managers(id),
+    FOREIGN KEY (car_id) REFERENCES cars(id)
+);
+
+
+--2
+CREATE TABLE IF NOT EXISTS staff (
+    s_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    s_name VARCHAR(45) NOT NULL,
+    s_dob DATE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS faculty (
+    f_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    f_name VARCHAR(45) NOT NULL UNIQUE,
+    f_dean_id INT NOT NULL,
+    FOREIGN KEY (f_dean_id) REFERENCES staff(s_id)
+);
+
+CREATE TABLE IF NOT EXISTS grp (
+    g_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    g_num VARCHAR(10) NOT NULL,
+    g_start_year INT NOT NULL,
+    g_faculty INT NOT NULL,
+    FOREIGN KEY (g_faculty) REFERENCES faculty(f_id)
+);
+
+--3
+CREATE TABLE IF NOT EXISTS accounts (
+    account_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    company_name VARCHAR(100) NOT NULL UNIQUE,
+    industry VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS contacts (
+    contact_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    account_id INT NOT NULL,
+    FOREIGN KEY (account_id) REFERENCES accounts(account_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS opportunities (
+    opp_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    deal_title VARCHAR(150) NOT NULL,
+    amount DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
+    close_date DATE NOT NULL,
+    account_id INT NOT NULL,
+    FOREIGN KEY (account_id) REFERENCES accounts(account_id) ON DELETE CASCADE
+);
