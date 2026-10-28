@@ -19,16 +19,17 @@
 Модификация данных (DML): Добавление новых записей в справочники (INSERT INTO), точечное обновление существующих данных (UPDATE ... SET ... WHERE) и безопасное удаление строк журнала (DELETE FROM ... WHERE) со строгим контролем условий фильтрации.)
 
 Initial Database State:
+
 <img width="392" height="375" alt="image" src="https://github.com/user-attachments/assets/355762d9-db28-4938-8106-5c74dfd6d3e8" />
 
 ---
 
 ## 2. Executed SQL Queries (20 Queries)
 
-```sql
 
 -- 1. Select all columns and rows from the cars table
 SELECT * FROM cars;
+
 <img width="303" height="119" alt="image" src="[https://github.com/user-attachments/assets/2cc36b87-695a-472d-8a44-cb742aa5d62e](https://github.com/user-attachments/assets/2cc36b87-695a-472d-8a44-cb742aa5d62e)" />
 
 
