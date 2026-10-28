@@ -3,6 +3,7 @@
 **Objective:** Study core data retrieval and modification queries such as `SELECT`, `UPDATE`, `DELETE`, `INSERT`, as well as using joins (`JOIN`) and aggregate functions with grouping (`GROUP BY`, `HAVING`) using SQL.
 
 ( Изучение основных запросов выборки и модификации данных, таких как SELECT, UPDATE, DELETE, INSERT, а также использование объединений (JOIN) и агрегатных функций с группировкой (GROUP BY, HAVING) с использованием языка запросов SQL.)
+
 ---
 
 ## 1. Key SQL Concepts Covered
