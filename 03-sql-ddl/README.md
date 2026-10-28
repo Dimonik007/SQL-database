@@ -1,4 +1,4 @@
-# y Work №3: Database Generation & Data Population (SQL)
+#  Work №3: Database Generation & Data Population (SQL)
 
 **Objective:** Recreate the Car Dealership database from the previous laboratory work using SQL (`CREATE SCHEMA`, `CREATE TABLE`) and populate it with data using different `INSERT INTO` syntax variations.
 
