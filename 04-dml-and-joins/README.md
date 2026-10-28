@@ -27,29 +27,31 @@ Initial Database State:
 ## 2. Executed SQL Queries (20 Queries)
 
 
- 1. Select all columns and rows from the cars table
+ # 1. Select all columns and rows from the cars table
 SELECT * FROM cars;
 
 <img width="303" height="119" alt="image" src="https://github.com/user-attachments/assets/2cc36b87-695a-472d-8a44-cb742aa5d62e" />
 
--- 2. Select manager names and phones, sorted alphabetically by name
+  # 2. Select manager names and phones, sorted alphabetically by name
 SELECT name, phone FROM managers ORDER BY name ASC;
 
 <img width="203" height="113" alt="image" src="https://github.com/user-attachments/assets/70f1c0b8-4b02-44c2-8015-aa8693637961" />
 
-
--- 3. Find all 'BMW' cars
+# 3. Find all 'BMW' cars
 SELECT * FROM cars WHERE car_brand = 'BMW';
+
 <img width="303" height="94" alt="image" src="https://github.com/user-attachments/assets/30a39a45-610b-45d2-ae49-4d0adb64b1b6" />
 
 
--- 4. Find all sales where the deal price is greater than 60,000
+# 4. Find all sales where the deal price is greater than 60,000
 SELECT * FROM sales WHERE price > 60000.00;
+
 <img width="373" height="90" alt="image" src="https://github.com/user-attachments/assets/ac32bc96-1b8e-4b7c-8e95-12b3570cc3c0" />
 
 
--- 5. Find sales made in March 2023
+# 5. Find sales made in March 2023
 SELECT * FROM sales WHERE date_of_sale BETWEEN '2023-03-01' AND '2023-03-31';
+
 <img width="367" height="63" alt="image" src="https://github.com/user-attachments/assets/cf36f660-ad01-4ff2-ad22-85028863fa7a" />
 
 
