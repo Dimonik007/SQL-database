@@ -27,7 +27,7 @@ Initial Database State:
 ## 2. Executed SQL Queries (20 Queries)
 
 
--- 1. Select all columns and rows from the cars table
+ 1. Select all columns and rows from the cars table
 SELECT * FROM cars;
 
 <img width="303" height="119" alt="image" src="[https://github.com/user-attachments/assets/2cc36b87-695a-472d-8a44-cb742aa5d62e](https://github.com/user-attachments/assets/2cc36b87-695a-472d-8a44-cb742aa5d62e)" />
