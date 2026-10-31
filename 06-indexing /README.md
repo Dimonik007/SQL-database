@@ -125,29 +125,29 @@ SELECT COUNT(*) AS total_sales FROM sales;
 ```sql
 SET profiling = 1;
 
--- 1. Exact match and less-than condition / Точное совпадение (=) и условие меньше (<)
+-- 1.       Exact match and less-than condition / Точное совпадение (=) и условие меньше (<)
 SELECT * FROM sales 
 WHERE date_of_sale = '2023-05-15' AND price < 80000.00;
 
--- 2. Date range, price filter, and sorting / Диапазон (BETWEEN), фильтр (>) и сортировка (ORDER BY)
+-- 2.         Date range, price filter, and sorting / Диапазон (BETWEEN), фильтр (>) и сортировка (ORDER BY)
 SELECT id, manager_id, car_id, date_of_sale, price 
 FROM sales 
 WHERE date_of_sale BETWEEN '2023-01-01' AND '2023-03-31' 
   AND price > 60000.00
 ORDER BY date_of_sale;
 
--- 3. Prefix search / Поиск по префиксу (LIKE)
+-- 3.             Prefix search / Поиск по префиксу (LIKE)
 SELECT id, name, surname, phone 
 FROM managers 
 WHERE surname LIKE 'ManagerSurname_4%';
 
--- 4. Aggregation and grouping / Агрегация и группировка (GROUP BY)
+-- 4.                  Aggregation and grouping / Агрегация и группировка (GROUP BY)
 SELECT date_of_sale, COUNT(id) AS deals_count, SUM(price) AS daily_revenue 
 FROM sales 
 WHERE date_of_sale BETWEEN '2023-06-01' AND '2023-06-30'
 GROUP BY date_of_sale;
 
--- 5. Multi-table JOIN with filters / Соединение таблиц (JOIN) с фильтрацией
+-- 5.                       Multi-table JOIN with filters / Соединение таблиц (JOIN) с фильтрацией
 SELECT s.id, c.car_brand, c.model, c.color, s.date_of_sale, s.price
 FROM sales s
 JOIN cars c ON s.car_id = c.id
@@ -177,16 +177,16 @@ SHOW PROFILES;
 ### 3.1–3.2. Created Indexes / Созданные индексы
 
 ```sql
--- 1. Composite index on date and price / Составной индекс по дате и цене
+-- 1.            Composite index on date and price / Составной индекс по дате и цене
 CREATE INDEX idx_sales_date_price ON sales(date_of_sale, price);
 
--- 2. Regular index on surname / Обычный индекс по фамилии
+-- 2.               Regular index on surname / Обычный индекс по фамилии
 CREATE INDEX idx_managers_surname ON managers(surname);
 
--- 3. Unique index on phone number / Уникальный индекс по телефону
+-- 3.                    Unique index on phone number / Уникальный индекс по телефону
 CREATE UNIQUE INDEX idx_managers_phone ON managers(phone);
 
--- 4. Composite index on car brand and color / Составной индекс по марке и цвету
+-- 4.                       Composite index on car brand and color / Составной индекс по марке и цвету
 CREATE INDEX idx_cars_brand_color ON cars(car_brand, color);
 ```
 
