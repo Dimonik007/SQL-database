@@ -72,29 +72,29 @@ CREATE PROCEDURE add_validated_sale(
 BEGIN
     DECLARE corrected_date DATE;
 
-    -- EN: Validation 1: Price must be strictly greater than 0
-    -- RU: Проверка 1: Цена должна быть строго больше нуля
+    -- Price must be strictly greater than 0
+
     IF new_price IS NULL OR new_price <= 0 THEN
         SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Error / Ошибка: Sale price must be greater than 0';
     END IF;
 
-    -- EN: Validation 2: Check if manager exists
-    -- RU: Проверка 2: Существует ли менеджер
+    --  Check if manager exists
+
     IF NOT EXISTS (SELECT 1 FROM managers WHERE id = new_manager_id) THEN
         SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Error / Ошибка: Specified manager does not exist';
     END IF;
 
-    -- EN: Validation 3: Check if car exists
-    -- RU: Проверка 3: Существует ли автомобиль
+    --  Check if car exists
+
     IF NOT EXISTS (SELECT 1 FROM cars WHERE id = new_car_id) THEN
         SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Error / Ошибка: Specified car does not exist';
     END IF;
 
-    -- EN: Validation 4: Date cannot be NULL or in the future
-    -- RU: Проверка 4: Корректировка даты (не может быть NULL или в будущем)
+    -- Date cannot be NULL or in the future
+
     IF new_date IS NULL OR new_date > CURRENT_DATE() THEN
         SET corrected_date = CURRENT_DATE();
     ELSE
@@ -113,8 +113,7 @@ CREATE PROCEDURE clean_archived_sales(IN years_to_keep INT)
 BEGIN
     DECLARE safe_years_to_keep INT;
 
-    -- EN: Safety check: keep at least 3 years of records
-    -- RU: Защита от удаления свежих данных: минимум 3 года хранения
+    -- keep at least 3 years of records
     IF years_to_keep IS NULL OR years_to_keep < 3 THEN
         SET safe_years_to_keep = 3;
     ELSE
@@ -126,8 +125,8 @@ BEGIN
 END$$
 DELIMITER ;
 
--- EN: Scheduled event to run cleanup daily at midnight
--- RU: Автоматический запуск очистки каждую полночь
+-- Scheduled event to run cleanup daily at midnight
+
 CREATE EVENT IF NOT EXISTS auto_clean_archived_sales
 ON SCHEDULE EVERY 1 DAY
 STARTS '2023-01-01 00:00:00' ON COMPLETION PRESERVE ENABLE
@@ -151,29 +150,30 @@ BEGIN
     DECLARE sales_count_level INT DEFAULT 1;
     DECLARE final_level INT;
 
-    -- EN: Sanitize NULL and negative values
-    -- RU: Защита от NULL и отрицательных значений на входе
+    -- Sanitize NULL and negative values
+
     SET safe_revenue = IF(total_revenue IS NULL OR total_revenue < 0, 0, total_revenue);
     SET safe_sales_count = IF(sales_count IS NULL OR sales_count < 0, 0, sales_count);
 
-    -- EN: Tier by revenue (< 100k: Novice, 100k-500k: Experienced, > 500k: Master)
-    -- RU: Оценка по объему выручки (< 100k: Новичок, 100k-500k: Опытный, > 500k: Мастер)
+    -- Tier by revenue
+
+
     CASE
         WHEN safe_revenue < 100000 THEN SET revenue_level = 1;
         WHEN safe_revenue >= 100000 AND safe_revenue <= 500000 THEN SET revenue_level = 2;
         WHEN safe_revenue > 500000 THEN SET revenue_level = 3;
     END CASE;
 
-    -- EN: Tier by deal count (< 5: Novice, 5-20: Experienced, > 20: Master)
-    -- RU: Оценка по количеству сделок (< 5: Новичок, 5-20: Опытный, > 20: Мастер)
+    -- EN: Tier by deal count
+
     CASE
         WHEN safe_sales_count < 5 THEN SET sales_count_level = 1;
         WHEN safe_sales_count >= 5 AND safe_sales_count <= 20 THEN SET sales_count_level = 2;
         WHEN safe_sales_count > 20 THEN SET sales_count_level = 3;
     END CASE;
 
-    -- EN: Pick the highest achievement
-    -- RU: Выбираем наибольшее из двух достижений
+    -- Pick the highest achievement
+
     SET final_level = GREATEST(revenue_level, sales_count_level);
 
     IF UPPER(IFNULL(return_format, 'TEXT')) = 'NUMBER' THEN
@@ -201,12 +201,12 @@ RETURNS VARCHAR(50) DETERMINISTIC
 BEGIN
     DECLARE safe_currency_name VARCHAR(10);
 
-    -- EN: Default to 'USD' if currency is NULL or empty
-    -- RU: Проверка валюты на пустую строку или NULL
+    -- Default to USD if currency is NULL or empty
+
+
     SET safe_currency_name = IF(currency_name IS NULL OR TRIM(currency_name) = '', 'USD', UPPER(TRIM(currency_name)));
 
-    -- EN: Format amount with K (thousands) or M (millions)
-    -- RU: Проверка суммы на NULL и подстройка размерности (K / M)
+    -- Format amount with K (thousands) or M (millions)
     IF money_amount IS NULL OR money_amount <= 0 THEN
         RETURN CONCAT('0.00 ', safe_currency_name);
     ELSEIF money_amount >= 1000000 THEN
