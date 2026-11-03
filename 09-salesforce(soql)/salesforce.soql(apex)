@@ -1,0 +1,67 @@
+
+// 1. ВСТАВКА ТЕСТОВЫХ ДАННЫХ
+Account acc1 = new Account(Name = 'Acme Corporation', Industry = 'Technology', Rating = 'Hot', AnnualRevenue = 7700000);
+Account acc2 = new Account(Name = 'GB Media', Industry = 'Communications', Rating = 'Warm', AnnualRevenue = 3200000);
+Account acc3 = new Account(Name = 'Arena FinTech', Industry = 'Finance', Rating = 'Hot', AnnualRevenue = 8500000);
+Account acc4 = new Account(Name = 'DORD Logistics', Industry = 'Transportation', Rating = 'Cold', AnnualRevenue = 450000);
+insert new List<Account>{acc1, acc2, acc3, acc4};
+
+Contact con1 = new Contact(FirstName = 'John', LastName = 'Smith', Email = 'j.smith@acme.com', AccountId = acc1.Id);
+Contact con2 = new Contact(FirstName = 'Sarah', LastName = 'Connor', Email = 's.connor@acme.com', AccountId = acc1.Id);
+Contact con3 = new Contact(FirstName = 'Michael', LastName = 'Scott', Email = 'm.scott@globalmedia.com', AccountId = acc2.Id);
+Contact con4 = new Contact(FirstName = 'Elena', LastName = 'Rostova', Email = 'e.rostova@apexfintech.com', AccountId = acc3.Id);
+insert new List<Contact>{con1, con2, con3, con4};
+
+Opportunity opp1 = new Opportunity(Name = 'Acme Cloud Migration', StageName = 'Closed Won', Amount = 120000, CloseDate = Date.newInstance(2025, 2, 15), AccountId = acc1.Id);
+Opportunity opp2 = new Opportunity(Name = 'Acme AI Add-on', StageName = 'Negotiation/Review', Amount = 65000, CloseDate = Date.newInstance(2025, 6, 30), AccountId = acc1.Id);
+Opportunity opp3 = new Opportunity(Name = 'Global Media CRM License', StageName = 'Prospecting', Amount = 35000, CloseDate = Date.newInstance(2025, 8, 10), AccountId = acc2.Id);
+Opportunity opp4 = new Opportunity(Name = 'Apex Core Banking Upgrade', StageName = 'Closed Won', Amount = 250000, CloseDate = Date.newInstance(2025, 1, 20), AccountId = acc3.Id);
+Opportunity opp5 = new Opportunity(Name = 'Nordic Fleet Tracker', StageName = 'Closed Lost', Amount = 80000, CloseDate = Date.newInstance(2025, 3, 1), AccountId = acc4.Id);
+insert new List<Opportunity>{opp1, opp2, opp3, opp4, opp5};
+
+Case case1 = new Case(Subject = 'API Rate Limit Exceeded', Status = 'Escalated', Priority = 'High', AccountId = acc1.Id, ContactId = con1.Id);
+Case case2 = new Case(Subject = 'Billing Invoice Question', Status = 'Closed', Priority = 'Low', AccountId = acc2.Id, ContactId = con3.Id);
+Case case3 = new Case(Subject = 'SSO Login Failure in Production', Status = 'Working', Priority = 'High', AccountId = acc3.Id, ContactId = con4.Id);
+insert new List<Case>{case1, case2, case3};
+
+
+// 2. ВЫПОЛНЕНИЕ SOQL-ЗАПРОСОВ
+
+// Задача 1: Крупные активные и выигранные сделки
+List<Opportunity> highValueOpps = [
+    SELECT Id, Name, StageName, Amount, CloseDate
+    FROM Opportunity
+    WHERE StageName != 'Closed Lost' AND Amount > 50000
+    ORDER BY Amount DESC
+];
+
+// Задача 2: Контакты и названия их компаний (Child-to-Parent)
+List<Contact> contactsWithAccounts = [
+    SELECT FirstName, LastName, Email, Account.Name, Account.Industry
+    FROM Contact
+];
+
+// Задача 3: Компании и вложенный список их сделок (Parent-to-Child)
+List<Account> accountsWithOpps = [
+    SELECT Name, Industry, (SELECT Name, StageName, Amount FROM Opportunities)
+    FROM Account
+];
+
+// Задача 4: Агрегация выручки по компаниям (> $100,000)
+List<AggregateResult> topAccountsRevenue = [
+    SELECT Account.Name accName, COUNT(Id) dealsCount, SUM(Amount) totalAmount
+    FROM Opportunity
+    GROUP BY Account.Name
+    HAVING SUM(Amount) > 100000
+];
+
+// Задача 5: Компании с открытыми тикетами высокого приоритета (Semi-Join)
+List<Account> urgentSupportAccounts = [
+    SELECT Id, Name, Industry, Rating
+    FROM Account
+    WHERE Id IN (
+        SELECT AccountId 
+        FROM Case 
+        WHERE Priority = 'High' AND Status != 'Closed'
+    )
+];
